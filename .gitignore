@@ -1,0 +1,6 @@
+dist
+trash
+node_modules
+npm-debug.log
+*.blend1
+.idea
