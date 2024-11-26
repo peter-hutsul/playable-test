@@ -49,14 +49,14 @@ export class ChoiceBar extends Tiny.Object2D {
   }
 
   show() {
-    this.x = PL(0, this.game.ui.scaledWidth / 2 + 90);
-    this.y = PL(this.game.ui.scaledHeight / 2 + 90, 0);
+    this.x = PL(0, app.ui.scaledWidth / 2 + 90);
+    this.y = PL(app.ui.scaledHeight / 2 + 90, 0);
 
     app.tweens
       .add(this)
       .to({
-        x: PL(0, this.game.ui.scaledWidth / 2 - 90),
-        y: PL(this.game.ui.scaledHeight / 2 - 90, 0)
+        x: PL(0, app.ui.scaledWidth / 2 - 90),
+        y: PL(app.ui.scaledHeight / 2 - 90, 0)
       })
       .duration(250)
       .easing(Tiny.Easing.Back.Out)
@@ -112,8 +112,8 @@ export class ChoiceBar extends Tiny.Object2D {
   }
 
   resize() {
-    this.x = PL(0, this.game.ui.scaledWidth / 2 - 90);
-    this.y = PL(this.game.ui.scaledHeight / 2 - 90, 0);
+    this.x = PL(0, app.ui.scaledWidth / 2 - 90);
+    this.y = PL(app.ui.scaledHeight / 2 - 90, 0);
 
     this.alignButtons();
   }

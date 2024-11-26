@@ -8,7 +8,7 @@ export default class Opaque extends Tiny.Object2D {
     this.bg.anchor.set(0.5);
     this.bg.scale.set(2);
 
-    this.game.input.add(this);
+    app.input.add(this);
 
     var hand = (this.hand = new Tiny.Object2D());
 
@@ -101,7 +101,7 @@ export default class Opaque extends Tiny.Object2D {
     }
 
     this.input.on("down", (e) => {
-      if (this.game.input._active_objects.includes(this.object2d)) {
+      if (app.input._active_objects.includes(this.object2d)) {
         this.object2d.input.emit("down");
         this.hide();
         cb();
@@ -128,8 +128,8 @@ export default class Opaque extends Tiny.Object2D {
 
   resize() {
     if (this.darker.visible) {
-      this.darker.width = this.game.ui.scaledWidth * 2;
-      this.darker.height = this.game.ui.scaledHeight * 2;
+      this.darker.width = app.ui.scaledWidth * 2;
+      this.darker.height = app.ui.scaledHeight * 2;
     } else if (this.visible) {
       if (this.follow2d) {
         this.x = this.object2d.x;
@@ -160,7 +160,7 @@ export default class Opaque extends Tiny.Object2D {
   }
 
   updateHandPos() {
-    if (!this.game.parent.isLandscape) {
+    if (!app.parent.isLandscape) {
       if (this.x < 0) this.hand.rotation = 0.1;
       else this.hand.rotation = 3;
     } else {
@@ -170,7 +170,7 @@ export default class Opaque extends Tiny.Object2D {
   }
 
   updateTextPos() {
-    if (!this.game.parent.isLandscape) {
+    if (!app.parent.isLandscape) {
       this.text.x = 0;
       if (this.y < 0) this.text.y = game.ui.opaque.text.height / 2 + 130;
       else this.text.y = -game.ui.opaque.text.height / 2 - 130;
@@ -202,9 +202,9 @@ export default class Opaque extends Tiny.Object2D {
       var m = this.object3d.matrixWorld;
       this.temp.setFromMatrixPosition(m);
 
-      this.temp.project(this.game.parent.camera);
-      this.x = (this.temp.x * this.game.ui.scaledWidth) / 2;
-      this.y = (-this.temp.y * this.game.ui.scaledHeight) / 2;
+      this.temp.project(app.parent.camera);
+      this.x = (this.temp.x * app.ui.scaledWidth) / 2;
+      this.y = (-this.temp.y * app.ui.scaledHeight) / 2;
 
       this.updateTextPos();
       this.updateHandPos();

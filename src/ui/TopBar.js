@@ -17,6 +17,6 @@ export class TopBar extends Tiny.Object2D {
   }
 
   resize() {
-    this.y = -this.game.ui.scaledHeight / 2 + 70;
+    this.y = -app.ui.scaledHeight / 2 + 70;
   }
 }

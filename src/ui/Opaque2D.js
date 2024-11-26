@@ -41,7 +41,7 @@ export class Opaque extends Tiny.Object2D {
     this.visible = false;
 
     if (true) {
-      this.wiggle = this.game.tweens
+      this.wiggle = app.tweens
         .add(hand_sprite.anchor)
         .to({ y: 0.3 }, 400)
         .easing(Tiny.Easing.Quadratic.InOut)
@@ -60,7 +60,7 @@ export class Opaque extends Tiny.Object2D {
     darker.anchor.set(0.5);
     dg.destroy();
 
-    this.game.input.add(darker);
+    app.input.add(darker);
     darker.visible = false;
 
     this.parent.parent.add(darker);
@@ -82,7 +82,7 @@ export class Opaque extends Tiny.Object2D {
 
     let tempWasEnabled = object2d.inputEnabled;
 
-    this.game.input.add(object2d);
+    app.input.add(object2d);
     object2d.input.once("down", (e) => {
       object2d.inputEnabled = tempWasEnabled;
       this.hide();
@@ -98,7 +98,7 @@ export class Opaque extends Tiny.Object2D {
     if (delay) {
       this.darker.alpha = 0;
       this.darker.visible = true;
-      this.game.tweens.add(this.darker).to({ alpha: 1 }, delay).easing(Tiny.Easing.Cubic.Out).onComplete(cb).start();
+      app.tweens.add(this.darker).to({ alpha: 1 }, delay).easing(Tiny.Easing.Cubic.Out).onComplete(cb).start();
     } else {
       this.darker.visible = true;
       cb && cb();
@@ -108,8 +108,8 @@ export class Opaque extends Tiny.Object2D {
 
   resize() {
     if (this.darker.visible) {
-      this.darker.width = this.game.ui.scaledWidth * 2;
-      this.darker.height = this.game.ui.scaledHeight * 2;
+      this.darker.width = app.ui.scaledWidth * 2;
+      this.darker.height = app.ui.scaledHeight * 2;
     } else if (this.visible) {
       if (this.follow2d) {
         this.x = this.object2d.x;

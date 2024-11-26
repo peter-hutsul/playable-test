@@ -27,7 +27,7 @@ export class InstallButton extends Tiny.Sprite {
     this.add(text);
     this.scale.set(0.9)
 
-    this.game.input.add(this);
+    app.input.add(this);
     this.input.on("down", (e) => {
       sdk.install();
     });

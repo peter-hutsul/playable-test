@@ -77,7 +77,7 @@ export class GameplayManager {
       .add(app.camera.position)
       .to({
         x: [-1.62, -2.93],
-        y: [9.9, 22],
+        y: 22,
         z: [0.541, 1.91]
       })
       .interpolation(Tiny.Interpolation.CatmullRom)
@@ -88,7 +88,7 @@ export class GameplayManager {
 
     app.tweens
       .add(app.camera.rotation)
-      .to({ x: [-0.371, -1.55], y: [-0.053, -0.647], z: [-0.02, -1.54] })
+      .to({ x: [-1.04, -1.55], y: [-0.034, -0.647], z: [-0.059, -1.54] })
       .interpolation(Tiny.Interpolation.CatmullRom)
       .duration(3000)
       .delay(1000)

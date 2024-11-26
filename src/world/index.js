@@ -11,13 +11,13 @@ export class World extends Scene {
   }
 
   preload() {
-    this.game.load.gltf("ground", resources.ground, false, function (gltf) {
+    app.load.gltf("ground", resources.ground, false, function (gltf) {
       gltf.scene.traverse(function (obj) {
         if (obj.isMesh) obj.geometry.computeVertexNormals();
       });
     });
 
-    this.game.load.gltf("objects", resources.objects, true, function (gltf) {
+    app.load.gltf("objects", resources.objects, true, function (gltf) {
       gltf.scene.traverse(function (obj) {
         if (obj.isMesh) {
           obj.castShadow = true;
@@ -28,12 +28,12 @@ export class World extends Scene {
       app.cache.mesh3d["objects.placeholder"].material = new MeshBasicMaterial();
     });
 
-    this.game.load.texture3d("plus", resources.plus);
-    this.game.load.texture3d("smoke", resources.smoke);
+    app.load.texture3d("plus", resources.plus);
+    app.load.texture3d("smoke", resources.smoke);
   }
 
   create() {
-    const ground = this.game.cache.gltf["ground"].scene;
+    const ground = app.cache.gltf["ground"].scene;
     ground.traverse((obj) => {
       if (obj.isMesh) {
         if (obj.name && obj.name.startsWith("terrain")) {
@@ -110,25 +110,25 @@ export class World extends Scene {
     const duration = 1000;
     this.point1.visible = this.point2.visible = true;
 
-    this.game.tweens
+    app.tweens
       .add(this.direct.position)
       .to({ z: 50, x: 0 })
       .duration(duration * 0.4)
       .easing(Tiny.Easing.Cubic.Out)
       .start();
-    this.game.tweens
+    app.tweens
       .add(this.direct)
       .to({ intensity: 0 })
       .duration(duration * 0.4)
       .easing(Tiny.Easing.Cubic.Out)
       .start();
-    this.game.tweens
+    app.tweens
       .add(this.ambient)
       .to({ intensity: 0.1 })
       .duration(duration * 0.4)
       .easing(Tiny.Easing.Cubic.Out)
       .start();
-    this.game.tweens
+    app.tweens
       .add(this.point1)
       .to({ intensity: 2 })
       .onUpdate(() => {
@@ -139,7 +139,7 @@ export class World extends Scene {
       .start();
 
     const nightColor = new Color(0x9999ff);
-    this.game.tweens
+    app.tweens
       .add(this.ambient.color)
       .to({ r: nightColor.r, g: nightColor.g, b: nightColor.b })
       .duration(duration * 0.1)
@@ -147,29 +147,29 @@ export class World extends Scene {
       .delay(duration * 0.1)
       .start();
 
-    this.game.timer.add(duration * 0.5, () => {
+    app.timer.add(duration * 0.5, () => {
       this.direct.position.z = -50;
 
-      this.game.tweens
+      app.tweens
         .add(this.direct.position)
         .to({ z: -10, x: -10 })
         .duration(duration * 0.4)
         .easing(Tiny.Easing.Cubic.In)
         .start();
-      this.game.tweens
+      app.tweens
         .add(this.direct)
         .to({ intensity: 1.9 })
         .duration(duration * 0.4)
         .easing(Tiny.Easing.Cubic.In)
         .start();
-      this.game.tweens
+      app.tweens
         .add(this.ambient)
         .to({ intensity: 0.8 })
         .duration(duration * 0.4)
         .easing(Tiny.Easing.Cubic.In)
         .start();
 
-      this.game.tweens
+      app.tweens
         .add(this.point1)
         .to({ intensity: 0 })
         .onUpdate(() => {
@@ -183,7 +183,7 @@ export class World extends Scene {
         .easing(Tiny.Easing.Cubic.In)
         .start();
 
-      this.game.tweens
+      app.tweens
         .add(this.ambient.color)
         .to({ r: 1, g: 1, b: 1 })
         .duration(duration * 0.1)

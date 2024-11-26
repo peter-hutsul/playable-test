@@ -20,15 +20,15 @@ export class UI extends Tiny.Object2D {
     this.topBar = new TopBar(this.hud);
     this.choiceBar = new ChoiceBar(this.hud);
     this.balance = new Balance(this.topBar);
-    this.game.opaque = this.opaque = new Opaque(this.hud);
+    app.opaque = this.opaque = new Opaque(this.hud);
     this.installBtn = new InstallButton(this.hud);
     this.endcard = new Endcard(this);
 
     this.skipDay = new Tiny.Sprite("skip_day");
     this.skipDay.anchor.set(0.5);
     this.skipDay.scale.set(0.6);
-    this.game.input.add(this.skipDay);
-    this.skipDay.input.on("down", () => this.game.scene.nextDay());
+    app.input.add(this.skipDay);
+    this.skipDay.input.on("down", () => app.scene.nextDay());
 
     this.hud.add(this.skipDay);
   }
@@ -55,7 +55,7 @@ export class UI extends Tiny.Object2D {
     this.balance.x = -200;
 
     this.skipDay.x = -this.scaledWidth / 2 + 100;
-    this.skipDay.y = -this.game.ui.scaledHeight / 2 + 220;
+    this.skipDay.y = -app.ui.scaledHeight / 2 + 220;
 
     this.opaque.resize();
     this.endcard.resize();

@@ -19,9 +19,8 @@ export class Sheep extends Object3D {
   constructor() {
     super();
 
+    this.frustumCulled = false;
     this.loadModel();
-
-    window.te = this;
 
     this.actionTimer = app.timer.loop(randomInt(6000, 16000), () => {
       this.anims.action_sheep.weight = 1;
@@ -65,6 +64,7 @@ export class Sheep extends Object3D {
     scene.position.set(0, 0, 0);
 
     this.traverse((obj) => {
+      obj.frustumCulled = false;
       if (obj.isMesh) obj.material.skinning = true;
     });
 

@@ -15,13 +15,15 @@ export class Endcard extends Tiny.Object2D {
 
     this.button = new Tiny.Object2D();
     this.button.add(this.btnSprite);
-    this.button.scale.set(0.75)
+    this.button.scale.set(0.75);
     this.add(this.button);
 
     const text = new Tiny.Text("Get more in full game", {
       font: "bold 50pt Arial",
       fill: "#ffffff",
       align: "center",
+      stroke: "#54a4d4",
+      strokeThickness: 4,
       wordWrap: true,
       wordWrapWidth: 400
     });
