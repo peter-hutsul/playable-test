@@ -26,9 +26,20 @@ export class ChoiceBar extends Tiny.Object2D {
     });
   }
 
+  hideActions() {
+    this.hide(() => {
+      for (let button of this.buttons) {
+        button.destroy();
+        this.remove(button);
+      }
+
+      this.buttons.length = 0;
+    });
+  }
+
   showActions(elements) {
     for (let element of elements) {
-      const button = new ChoiceButton(element.icon, element.action);
+      const button = new ChoiceButton(element.id, element.action);
       this.buttons.push(button);
       this.add(button);
     }
@@ -54,6 +65,26 @@ export class ChoiceBar extends Tiny.Object2D {
     this.visible = true;
   }
 
+  hide(onComplete) {
+    this.x = PL(0, app.ui.scaledWidth / 2 - 90);
+    this.y = PL(app.ui.scaledHeight / 2 - 90, 0);
+    this.visible = true;
+
+    app.tweens
+      .add(this)
+      .to({
+        x: PL(0, app.ui.scaledWidth / 2 + 90),
+        y: PL(app.ui.scaledHeight / 2 + 90, 0)
+      })
+      .duration(250)
+      .easing(Tiny.Easing.Back.Out)
+      .onComplete(() => {
+        this.visible = false;
+        onComplete();
+      })
+      .start();
+  }
+
   alignButtons() {
     const center = this.children.length / 2;
     const isLandscape = sdk.landscape;
@@ -76,6 +107,7 @@ export class ChoiceBar extends Tiny.Object2D {
       }
       this.graphics.drawRoundedRect(-this.buttons.length * 90, -90, this.buttons.length * 180, 200, 30);
     }
+
     this.graphics.endFill();
   }
 

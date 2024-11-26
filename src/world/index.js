@@ -1,24 +1,8 @@
 import { config } from "config";
 import { resources } from "../resources";
-import {
-  Scene,
-  AmbientLight,
-  DirectionalLight,
-  MeshLambertMaterial,
-  SphereGeometry,
-  Mesh,
-  DoubleSide,
-  BoxGeometry,
-  PlaneGeometry,
-  Color,
-  PointLight
-} from "three";
-
-// import { TrailRenderer, M } from '@gpg-web/playable-libs';
-// import Lorry from '../../../prefabs/Transports/Lorry';
-// import Queue from '../../../managers/Queue';
-// import MineExplosionParticle from '../../../prefabs/particles/points/MineExplosion';
-// import SmokeParticles from '../../../prefabs/particles/points/Smoke';
+import { Scene, AmbientLight, DirectionalLight, Color, PointLight, MeshBasicMaterial } from "three";
+import { Chicken } from "./Chicken";
+import { random } from "utils";
 
 export class World extends Scene {
   constructor(game) {
@@ -27,25 +11,28 @@ export class World extends Scene {
   }
 
   preload() {
-    this.game.load.gltf("ground", resources.ground);
-    // this.game.load.gltf('Lorry', window.resources.models.Lorry, false, function (gltf) {
-    //     gltf.scene.traverse(function (obj) {
-    //         if (obj.isMesh) obj.geometry.computeVertexNormals();
-    //     });
-    // });
-    // this.game.load.texture3d('main', window.resources.textures.main);
-    // this.game.load.texture3d('explosion_1', window.resources.textures.explosion_1);
-    // this.game.load.texture3d('explosion_2', window.resources.textures.explosion_2);
-    // this.game.cache.gltf["key"];
-    // this.game.cache.texture3d["key"];
-    // this.game.cache.mesh3d["key.meshName"];
-    // this.game.cache.animation3d["key.animationName"];
+    this.game.load.gltf("ground", resources.ground, false, function (gltf) {
+      gltf.scene.traverse(function (obj) {
+        if (obj.isMesh) obj.geometry.computeVertexNormals();
+      });
+    });
+
+    this.game.load.gltf("objects", resources.objects, true, function (gltf) {
+      gltf.scene.traverse(function (obj) {
+        if (obj.isMesh) {
+          obj.castShadow = true;
+          obj.geometry.computeVertexNormals();
+        }
+      });
+
+      app.cache.mesh3d["objects.placeholder"].material = new MeshBasicMaterial();
+    });
+
+    this.game.load.texture3d("plus", resources.plus);
+    this.game.load.texture3d("smoke", resources.smoke);
   }
 
   create() {
-    // this.material = this.game.material = new MeshLambertMaterial({
-    //   map: this.game.cache.texture3d["main"]
-    // });
     const ground = this.game.cache.gltf["ground"].scene;
     ground.traverse((obj) => {
       if (obj.isMesh) {
@@ -57,182 +44,22 @@ export class World extends Scene {
       }
     });
 
+    const chicken = new Chicken();
+    chicken.position.set(9.2, 4.15, -6.53);
+    chicken.rotation.y = random(-Math.PI, Math.PI);
+    this.add(chicken);
+
+    const chicken2 = new Chicken();
+    chicken2.position.set(11.69, 4.15, -8.2);
+    chicken2.rotation.y = random(-Math.PI, Math.PI);
+    this.add(chicken2);
+
+    const chicken3 = new Chicken();
+    chicken3.position.set(11, 4.15, -6);
+    chicken3.rotation.y = random(-Math.PI, Math.PI);
+    this.add(chicken3);
+
     this.add(ground);
-
-    /**
-     * Terrain creating
-     */
-    // const terrain = new Mesh(new PlaneGeometry(100, 100, 1, 1), new MeshLambertMaterial({ color: 0x298933 }));
-    // terrain.material.color.convertSRGBToLinear();
-    // terrain.rotation.x = -Math.PI / 2;
-    // terrain.receiveShadow = true;
-    // this.add(terrain);
-
-    /**
-     * Queue manager creating
-     */
-    // const queue = (this.queue = new Queue());
-
-    // const path = [];
-
-    // path.push([0, 0]);
-    // for (let i = 0; i < 20; i++) {
-    //     path.push([M.random(-50, 50), M.random(-50, 50)]);
-    // }
-    // path.push([0, 0]);
-
-    // queue.setPath(path);
-
-    // queue.setSpeed(6);
-    // game.timer.loop(7000, function () {
-    //     queue.setSpeed(M.random(4, 8));
-    // });
-
-    // queue.setDistance(2);
-    // if (__DEV__) {
-    //     setTimeout(() => debug3d.drawPath(queue.path), 0);
-    //     setTimeout(() => debug3d.control(queue.path), 0);
-    // }
-
-    // /**
-    //  * Car #1 object creating
-    //  */
-    // const car = new Lorry(this);
-    // car.scale.set(2, 2, 2);
-    // this.add(car);
-    // queue.addOne(car);
-
-    // if (__DEV__) {
-    //     car.add(new THREE.AxesHelper(5));
-    // }
-
-    // /**
-    //  * Car #2 object creating
-    //  */
-    // const car2 = new Lorry(this);
-    // car2.scale.set(2, 2, 2);
-    // this.add(car2);
-    // queue.addOne(car2);
-
-    // /**
-    //  * Box object creating
-    //  */
-    // const box = new Mesh(new BoxGeometry(3, 3, 3), new MeshLambertMaterial({ color: 0x7878ff }));
-    // box.name = 'box';
-    // box.castShadow = true;
-    // box.geometry.translate(0, 1.5, 0);
-    // box.update = function () {};
-    // box.stopped = function () {};
-    // box.move = function (point) {
-    //     this.rotation.y = Math.atan2(this.position.z - point.z, point.x - this.position.x) + 1.57;
-    //     this.position.set(point.x, point.y, point.z);
-    // };
-    // this.add(box);
-    // const boxText = new Tiny.Text3D('Gold', {
-    //     wordWrap: false,
-    //     font: 'bold 20pt Arial',
-    //     fill: '#f10000',
-    //     size: 5
-    // });
-    // boxText.material.side = DoubleSide;
-    // boxText.position.y = 2.8;
-    // boxText.position.z = 1.6;
-    // box.add(boxText);
-
-    // queue.addOne(box);
-
-    // /**
-    //  * Gold object creating
-    //  */
-    // const gold = game.cache.gltf['Lorry'].scene.children[3].clone();
-    // gold.material = this.material;
-    // gold.scale.set(4, 4, 4);
-    // gold.name = 'gold';
-    // gold.update = function () {};
-    // gold.stopped = function () {};
-    // gold.move = function (point) {
-    //     this.rotation.z = Math.atan2(point.x - this.position.x, this.position.z - point.z) + 1.57;
-    //     this.position.set(point.x, point.y + 1, point.z);
-    // };
-    // this.add(gold);
-    // queue.addOne(gold);
-
-    // /**
-    //  * Adding control points for queue
-    //  */
-    // queue.addPoint('point1', M.random(0.2, 0.3));
-    // queue.addPoint('point2', M.random(0.5, 0.8));
-
-    // queue.onCheckPoint = function (name, obj) {
-    //     console.log(obj.name + ' at ' + name);
-
-    //     game.timer.add(M.random(500, 2000), function () {
-    //         if (obj.name === 'lorry') {
-    //             if (name === 'point1') obj.fill(0);
-    //             else if (name === 'point2') obj.fill(100);
-    //         }
-
-    //         queue.cont(obj, name);
-    //     });
-    // };
-
-    // /**
-    //  * Added Tiny text board
-    //  */
-    // const board = new Tiny.Text3D('Welcome\nTiny framework', {
-    //     align: 'center',
-    //     wordWrap: true,
-    //     wordWrapWidth: 600,
-    //     font: 'bold 40pt Arial',
-    //     fill: '#4545f2',
-    //     strokeThickness: 5,
-    //     stroke: '#ffffff',
-    //     size: 35
-    // });
-    // board.rotation.y = -2.3;
-    // board.rotation.z = -0.1;
-    // board.position.y = 7;
-    // this.game.tweens
-    //     .add(board.position)
-    //     .to({ y: 11 }, 1000)
-    //     .easing(Tiny.Easing.Back.InOut)
-    //     .yoyo(true)
-    //     .repeat(Infinity)
-    //     .start();
-    // this.game.tweens
-    //     .add(board.rotation)
-    //     .to({ z: 0.1 }, 450)
-    //     .yoyo(true)
-    //     .easing(Tiny.Easing.Sinusoidal.InOut)
-    //     .repeat(Infinity)
-    //     .start();
-    // this.add(board);
-
-    // if (__DEV__) {
-    //     setTimeout(() => debug3d.control(board));
-    // }
-
-    // /**
-    //  * Added points particle
-    //  */
-    // const explosionParticles = new MineExplosionParticle(this.game, 80);
-    // explosionParticles.position.y = 5;
-    // this.add(explosionParticles);
-
-    // game.timer.loop(6000, function () {
-    //     explosionParticles.explode();
-    // });
-
-    // let smoke = new SmokeParticles(null, 0.8);
-    // smoke.position.set(0, 0, 0);
-    // this.add(smoke);
-
-    // if (__DEV__) {
-    //     setTimeout(() => debug3d.control(smoke));
-    // }
-
-    // smoke.start();
-
     this.setupLight();
   }
 
@@ -247,18 +74,15 @@ export class World extends Scene {
 
     if (config.graphics.shadows) {
       direct.castShadow = true;
-      direct.shadow.mapSize.width = 1024; // default
-      direct.shadow.mapSize.height = 1024; // default
-      direct.shadow.camera.near = 0.1; // default
-      direct.shadow.camera.far = 120; // default
+      direct.shadow.mapSize.width = 1024;
+      direct.shadow.mapSize.height = 1024;
+      direct.shadow.camera.near = 0.1;
+      direct.shadow.camera.far = 120;
 
       direct.shadow.camera.top = 25;
       direct.shadow.camera.bottom = -25;
       direct.shadow.camera.left = -25;
       direct.shadow.camera.right = 25;
-
-      //const helper = new THREE.CameraHelper( direct.shadow.camera );
-      //world.add( helper );
     }
 
     const point1 = new PointLight("#ffff90", 0, 15);
@@ -272,11 +96,11 @@ export class World extends Scene {
     this.add(point2);
 
     this.point1.visible = this.point2.visible = false;
-
-    // debug3d.control(point1)
   }
 
   nextDay() {
+    app.sound.play("throw_spear", 0.5);
+
     /**
      * Duration of next day animation
      */
@@ -370,7 +194,5 @@ export class World extends Scene {
 
   resize(width, height, scale) {}
 
-  update(delta) {
-    // this.queue.update(delta);
-  }
+  update(delta) {}
 }

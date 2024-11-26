@@ -3,7 +3,7 @@ Download [Node.js](https://nodejs.org/en/download/).
 Run this followed commands:
 
 ``` bash
-# Install dependencies (only for first time)
+# Install dependencies (only for the first time)
 npm i
 
 # Serve at localhost:3000

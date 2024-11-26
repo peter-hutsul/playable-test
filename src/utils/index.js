@@ -77,3 +77,13 @@ export function getScale(width, height) {
 
   return 1 / Math.max(mw / width, mh / height);
 }
+
+export function randomDirAngle() {
+  return [0, Math.PI / 2, Math.PI, (Math.PI * 3) / 2, Math.PI * 2][randomInt(0, 3)];
+}
+
+export function remove(arr, predicate) {
+  const index = arr.findIndex(predicate);
+
+  if (index > -1) return arr.splice(index, 1)[0];
+}

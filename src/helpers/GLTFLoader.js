@@ -7,8 +7,8 @@
  */
 
 import {
-  // AnimationClip,
-  // Bone,
+  AnimationClip,
+  Bone,
   Box3,
   BufferAttribute,
   BufferGeometry,
@@ -22,8 +22,8 @@ import {
   InterleavedBuffer,
   InterleavedBufferAttribute,
   // Interpolant,
-  // InterpolateDiscrete,
-  // InterpolateLinear,
+  InterpolateDiscrete,
+  InterpolateLinear,
   // Line,
   // LineBasicMaterial,
   // LineLoop,
@@ -50,12 +50,13 @@ import {
   Points,
   PointsMaterial,
   PropertyBinding,
-  // QuaternionKeyframeTrack,
+  QuaternionKeyframeTrack,
   RGBAFormat,
   RGBFormat,
   RepeatWrapping,
+  Skeleton,
+  SkinnedMesh,
   // Skeleton,
-  // SkinnedMesh,
   Sphere,
   // SpotLight,
   TangentSpaceNormalMap,
@@ -64,7 +65,7 @@ import {
   TriangleStripDrawMode,
   Vector2,
   Vector3,
-  // VectorKeyframeTrack,
+  VectorKeyframeTrack,
   sRGBEncoding
 } from "three";
 
@@ -978,12 +979,12 @@ var GLTFLoader = (function () {
     weights: "morphTargetInfluences"
   };
 
-  // var INTERPOLATION = {
-  // 	CUBICSPLINE: undefined, // We use a custom interpolant (GLTFCubicSplineInterpolation) for CUBICSPLINE tracks. Each
-  // 	                        // keyframe track will be initialized with a default interpolation type, then modified.
-  // 	LINEAR: InterpolateLinear,
-  // 	STEP: InterpolateDiscrete
-  // };
+  var INTERPOLATION = {
+  	CUBICSPLINE: undefined, // We use a custom interpolant (GLTFCubicSplineInterpolation) for CUBICSPLINE tracks. Each
+  	                        // keyframe track will be initialized with a default interpolation type, then modified.
+  	LINEAR: InterpolateLinear,
+  	STEP: InterpolateDiscrete
+  };
 
   var ALPHA_MODES = {
     OPAQUE: "OPAQUE",
@@ -2171,7 +2172,10 @@ var GLTFLoader = (function () {
           primitive.mode === undefined
         ) {
           // .isSkinnedMesh isn't in glTF spec. See .markDefs()
-          mesh = new Mesh(geometry, material);
+          mesh = meshDef.isSkinnedMesh === true
+          ? new SkinnedMesh( geometry, material )
+          : new Mesh( geometry, material );
+
 
           if (mesh.isSkinnedMesh === true && !mesh.geometry.attributes.skinWeight.normalized) {
             // we normalize floating point skin weight array to fix malformed assets (see #15319)
@@ -2274,119 +2278,119 @@ var GLTFLoader = (function () {
    * @return {Promise<AnimationClip>}
    */
   GLTFParser.prototype.loadAnimation = function (animationIndex) {
-    // var json = this.json;
-    // var animationDef = json.animations[ animationIndex ];
-    // var pendingNodes = [];
-    // var pendingInputAccessors = [];
-    // var pendingOutputAccessors = [];
-    // var pendingSamplers = [];
-    // var pendingTargets = [];
-    // for ( var i = 0, il = animationDef.channels.length; i < il; i ++ ) {
-    // 	var channel = animationDef.channels[ i ];
-    // 	var sampler = animationDef.samplers[ channel.sampler ];
-    // 	var target = channel.target;
-    // 	var name = target.node !== undefined ? target.node : target.id; // NOTE: target.id is deprecated.
-    // 	var input = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.input ] : sampler.input;
-    // 	var output = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.output ] : sampler.output;
-    // 	pendingNodes.push( this.getDependency( 'node', name ) );
-    // 	pendingInputAccessors.push( this.getDependency( 'accessor', input ) );
-    // 	pendingOutputAccessors.push( this.getDependency( 'accessor', output ) );
-    // 	pendingSamplers.push( sampler );
-    // 	pendingTargets.push( target );
-    // }
-    // return Promise.all( [
-    // 	Promise.all( pendingNodes ),
-    // 	Promise.all( pendingInputAccessors ),
-    // 	Promise.all( pendingOutputAccessors ),
-    // 	Promise.all( pendingSamplers ),
-    // 	Promise.all( pendingTargets )
-    // ] ).then( function ( dependencies ) {
-    // 	var nodes = dependencies[ 0 ];
-    // 	var inputAccessors = dependencies[ 1 ];
-    // 	var outputAccessors = dependencies[ 2 ];
-    // 	var samplers = dependencies[ 3 ];
-    // 	var targets = dependencies[ 4 ];
-    // 	var tracks = [];
-    // 	for ( var i = 0, il = nodes.length; i < il; i ++ ) {
-    // 		var node = nodes[ i ];
-    // 		var inputAccessor = inputAccessors[ i ];
-    // 		var outputAccessor = outputAccessors[ i ];
-    // 		var sampler = samplers[ i ];
-    // 		var target = targets[ i ];
-    // 		if ( node === undefined ) continue;
-    // 		node.updateMatrix();
-    // 		node.matrixAutoUpdate = true;
-    // 		var TypedKeyframeTrack;
-    // 		switch ( PATH_PROPERTIES[ target.path ] ) {
-    // 			case PATH_PROPERTIES.weights:
-    // 				TypedKeyframeTrack = NumberKeyframeTrack;
-    // 				break;
-    // 			case PATH_PROPERTIES.rotation:
-    // 				TypedKeyframeTrack = QuaternionKeyframeTrack;
-    // 				break;
-    // 			case PATH_PROPERTIES.position:
-    // 			case PATH_PROPERTIES.scale:
-    // 			default:
-    // 				TypedKeyframeTrack = VectorKeyframeTrack;
-    // 				break;
-    // 		}
-    // 		var targetName = node.name ? node.name : node.uuid;
-    // 		var interpolation = sampler.interpolation !== undefined ? INTERPOLATION[ sampler.interpolation ] : InterpolateLinear;
-    // 		var targetNames = [];
-    // 		if ( PATH_PROPERTIES[ target.path ] === PATH_PROPERTIES.weights ) {
-    // 			// Node may be a Group (glTF mesh with several primitives) or a Mesh.
-    // 			node.traverse( function ( object ) {
-    // 				if ( object.isMesh === true && object.morphTargetInfluences ) {
-    // 					targetNames.push( object.name ? object.name : object.uuid );
-    // 				}
-    // 			} );
-    // 		} else {
-    // 			targetNames.push( targetName );
-    // 		}
-    // 		var outputArray = outputAccessor.array;
-    // 		if ( outputAccessor.normalized ) {
-    // 			var scale;
-    // 			if ( outputArray.constructor === Int8Array ) {
-    // 				scale = 1 / 127;
-    // 			} else if ( outputArray.constructor === Uint8Array ) {
-    // 				scale = 1 / 255;
-    // 			} else if ( outputArray.constructor == Int16Array ) {
-    // 				scale = 1 / 32767;
-    // 			} else if ( outputArray.constructor === Uint16Array ) {
-    // 				scale = 1 / 65535;
-    // 			} else {
-    // 				throw new Error( 'THREE.GLTFLoader: Unsupported output accessor component type.' );
-    // 			}
-    // 			var scaled = new Float32Array( outputArray.length );
-    // 			for ( var j = 0, jl = outputArray.length; j < jl; j ++ ) {
-    // 				scaled[ j ] = outputArray[ j ] * scale;
-    // 			}
-    // 			outputArray = scaled;
-    // 		}
-    // 		for ( var j = 0, jl = targetNames.length; j < jl; j ++ ) {
-    // 			var track = new TypedKeyframeTrack(
-    // 				targetNames[ j ] + '.' + PATH_PROPERTIES[ target.path ],
-    // 				inputAccessor.array,
-    // 				outputArray,
-    // 				interpolation
-    // 			);
-    // 			// Override interpolation with custom factory method.
-    // 			if ( sampler.interpolation === 'CUBICSPLINE' ) {
-    // 				track.createInterpolant = function InterpolantFactoryMethodGLTFCubicSpline( result ) {
-    // 					// A CUBICSPLINE keyframe in glTF has three output values for each input value,
-    // 					// representing inTangent, splineVertex, and outTangent. As a result, track.getValueSize()
-    // 					// must be divided by three to get the interpolant's sampleSize argument.
-    // 					return new GLTFCubicSplineInterpolant( this.times, this.values, this.getValueSize() / 3, result );
-    // 				};
-    // 				// Mark as CUBICSPLINE. `track.getInterpolation()` doesn't support custom interpolants.
-    // 				track.createInterpolant.isInterpolantFactoryMethodGLTFCubicSpline = true;
-    // 			}
-    // 			tracks.push( track );
-    // 		}
-    // 	}
-    // 	var name = animationDef.name ? animationDef.name : 'animation_' + animationIndex;
-    // 	return new AnimationClip( name, undefined, tracks );
-    // } );
+    var json = this.json;
+    var animationDef = json.animations[ animationIndex ];
+    var pendingNodes = [];
+    var pendingInputAccessors = [];
+    var pendingOutputAccessors = [];
+    var pendingSamplers = [];
+    var pendingTargets = [];
+    for ( var i = 0, il = animationDef.channels.length; i < il; i ++ ) {
+    	var channel = animationDef.channels[ i ];
+    	var sampler = animationDef.samplers[ channel.sampler ];
+    	var target = channel.target;
+    	var name = target.node !== undefined ? target.node : target.id; // NOTE: target.id is deprecated.
+    	var input = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.input ] : sampler.input;
+    	var output = animationDef.parameters !== undefined ? animationDef.parameters[ sampler.output ] : sampler.output;
+    	pendingNodes.push( this.getDependency( 'node', name ) );
+    	pendingInputAccessors.push( this.getDependency( 'accessor', input ) );
+    	pendingOutputAccessors.push( this.getDependency( 'accessor', output ) );
+    	pendingSamplers.push( sampler );
+    	pendingTargets.push( target );
+    }
+    return Promise.all( [
+    	Promise.all( pendingNodes ),
+    	Promise.all( pendingInputAccessors ),
+    	Promise.all( pendingOutputAccessors ),
+    	Promise.all( pendingSamplers ),
+    	Promise.all( pendingTargets )
+    ] ).then( function ( dependencies ) {
+    	var nodes = dependencies[ 0 ];
+    	var inputAccessors = dependencies[ 1 ];
+    	var outputAccessors = dependencies[ 2 ];
+    	var samplers = dependencies[ 3 ];
+    	var targets = dependencies[ 4 ];
+    	var tracks = [];
+    	for ( var i = 0, il = nodes.length; i < il; i ++ ) {
+    		var node = nodes[ i ];
+    		var inputAccessor = inputAccessors[ i ];
+    		var outputAccessor = outputAccessors[ i ];
+    		var sampler = samplers[ i ];
+    		var target = targets[ i ];
+    		if ( node === undefined ) continue;
+    		node.updateMatrix();
+    		node.matrixAutoUpdate = true;
+    		var TypedKeyframeTrack;
+    		switch ( PATH_PROPERTIES[ target.path ] ) {
+    			case PATH_PROPERTIES.weights:
+    				TypedKeyframeTrack = NumberKeyframeTrack;
+    				break;
+    			case PATH_PROPERTIES.rotation:
+    				TypedKeyframeTrack = QuaternionKeyframeTrack;
+    				break;
+    			case PATH_PROPERTIES.position:
+    			case PATH_PROPERTIES.scale:
+    			default:
+    				TypedKeyframeTrack = VectorKeyframeTrack;
+    				break;
+    		}
+    		var targetName = node.name ? node.name : node.uuid;
+    		var interpolation = sampler.interpolation !== undefined ? INTERPOLATION[ sampler.interpolation ] : InterpolateLinear;
+    		var targetNames = [];
+    		if ( PATH_PROPERTIES[ target.path ] === PATH_PROPERTIES.weights ) {
+    			// Node may be a Group (glTF mesh with several primitives) or a Mesh.
+    			node.traverse( function ( object ) {
+    				if ( object.isMesh === true && object.morphTargetInfluences ) {
+    					targetNames.push( object.name ? object.name : object.uuid );
+    				}
+    			} );
+    		} else {
+    			targetNames.push( targetName );
+    		}
+    		var outputArray = outputAccessor.array;
+    		if ( outputAccessor.normalized ) {
+    			var scale;
+    			if ( outputArray.constructor === Int8Array ) {
+    				scale = 1 / 127;
+    			} else if ( outputArray.constructor === Uint8Array ) {
+    				scale = 1 / 255;
+    			} else if ( outputArray.constructor == Int16Array ) {
+    				scale = 1 / 32767;
+    			} else if ( outputArray.constructor === Uint16Array ) {
+    				scale = 1 / 65535;
+    			} else {
+    				throw new Error( 'THREE.GLTFLoader: Unsupported output accessor component type.' );
+    			}
+    			var scaled = new Float32Array( outputArray.length );
+    			for ( var j = 0, jl = outputArray.length; j < jl; j ++ ) {
+    				scaled[ j ] = outputArray[ j ] * scale;
+    			}
+    			outputArray = scaled;
+    		}
+    		for ( var j = 0, jl = targetNames.length; j < jl; j ++ ) {
+    			var track = new TypedKeyframeTrack(
+    				targetNames[ j ] + '.' + PATH_PROPERTIES[ target.path ],
+    				inputAccessor.array,
+    				outputArray,
+    				interpolation
+    			);
+    			// Override interpolation with custom factory method.
+    			if ( sampler.interpolation === 'CUBICSPLINE' ) {
+    				track.createInterpolant = function InterpolantFactoryMethodGLTFCubicSpline( result ) {
+    					// A CUBICSPLINE keyframe in glTF has three output values for each input value,
+    					// representing inTangent, splineVertex, and outTangent. As a result, track.getValueSize()
+    					// must be divided by three to get the interpolant's sampleSize argument.
+    					return new GLTFCubicSplineInterpolant( this.times, this.values, this.getValueSize() / 3, result );
+    				};
+    				// Mark as CUBICSPLINE. `track.getInterpolation()` doesn't support custom interpolants.
+    				track.createInterpolant.isInterpolantFactoryMethodGLTFCubicSpline = true;
+    			}
+    			tracks.push( track );
+    		}
+    	}
+    	var name = animationDef.name ? animationDef.name : 'animation_' + animationIndex;
+    	return new AnimationClip( name, undefined, tracks );
+    } );
   };
 
   /**
@@ -2455,7 +2459,7 @@ var GLTFLoader = (function () {
 
       // .isBone isn't in glTF spec. See .markDefs
       if (nodeDef.isBone === true) {
-        // node = new Bone();
+        node = new Bone();
       } else if (objects.length > 1) {
         node = new Group();
       } else if (objects.length === 1) {
@@ -2559,7 +2563,7 @@ var GLTFLoader = (function () {
                   }
                 }
 
-                // mesh.bind( new Skeleton( bones, boneInverses ), mesh.matrixWorld );
+                mesh.bind( new Skeleton( bones, boneInverses ), mesh.matrixWorld );
               });
 
               return node;

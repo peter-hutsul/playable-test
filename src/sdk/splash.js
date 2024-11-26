@@ -28,7 +28,7 @@ export class SplashScreen {
     style.textAlign = "center";
 
     style.background = `url(${icon}) no-repeat center center`;
-    style.backgroundSize = "220px";
+    style.backgroundSize = "180px";
     style.backgroundColor = "#d7d7d7";
     style.transition = "opacity 0.2s";
 

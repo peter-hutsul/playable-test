@@ -8,8 +8,6 @@ export class Opaque extends Tiny.Object2D {
     this.bg.anchor.set(0.5);
     this.bg.scale.set(2);
 
-    // this.inputEnabled = true;
-
     var hand = (this.hand = new Tiny.Object2D());
 
     var hand_sprite = new Tiny.Sprite("hand");

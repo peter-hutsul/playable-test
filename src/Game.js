@@ -1,19 +1,23 @@
-import { OrthographicCamera } from "three";
+import { OrthographicCamera, PerspectiveCamera } from "three";
 
 import { UI } from "./ui";
 import { World } from "./world";
 import { App3D } from "./helpers/App3D";
-import { MapControls, OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { MapControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { resources } from "./resources";
 import { sdk } from "sdk";
+import { GameplayManager } from "./managers/GameplayManager";
+import { config } from "config";
 
 export class Game extends App3D {
   constructor(width, height) {
     super(width, height);
 
     this.ready = false;
-
     this.ui = new UI(this.screen2d);
+
+    this.balance = config.economy.startBalance;
+    this.income = config.economy.startIncome;
   }
 
   createWorld() {
@@ -22,13 +26,13 @@ export class Game extends App3D {
   }
 
   createCamera() {
-    let camera = new OrthographicCamera(1, 1, 1, 1, 0.3, 500);
-    // let camera = new PerspectiveCamera(50, this.width/this.height, 0.1, 1000);
+    // let camera = new OrthographicCamera(1, 1, 1, 1, 0.3, 500);
+    let camera = new PerspectiveCamera(100, this.width / this.height, 0.1, 1000);
 
-    camera.position.set(18, 30, 8);
-    camera.rotation.set(-1.1, 0.62, 0.86);
+    camera.position.set(20, 27, 6);
+    camera.rotation.set(-1.1, 0.55, 0.86);
 
-    camera.distance = 25;
+    camera.distance = 60;
 
     if (__DEV__) {
       var controls = (window.controls = new MapControls(camera, this.inputView));
@@ -50,57 +54,11 @@ export class Game extends App3D {
     for (let key in resources.images) {
       this.load.image(key, resources.images[key]);
     }
+    for (let key in resources.sounds) {
+      this.load.sound(key, resources.sounds[key]);
+    }
     this.ui.preload();
     this.scene.preload();
-    // if (window.resources.sounds.sfx) {
-    //   this.load.sound("popup_chest", window.resources.sounds.sfx.popup_chest);
-    //   this.load.sound("creeper_hurt", window.resources.sounds.sfx.creeper_hurt);
-    // }
-    // this.load.sound("theme", window.resources.sounds.theme);
-  }
-
-  startIntro() {
-    this.tweens
-      .add(this.camera.position)
-      .to({
-        x: 8.37,
-        y: 25.81,
-        z: 3
-      })
-      .delay(1500)
-      .duration(1000)
-      .easing(Tiny.Easing.Cubic.InOut)
-      .start();
-
-    this.tweens
-      .add(this.camera)
-      .to({
-        distance: 10
-      })
-      .onUpdate(() => this.setupCamera())
-      .delay(1500)
-      .duration(1000)
-      .easing(Tiny.Easing.Cubic.InOut)
-      .start();
-
-    this.tweens
-      .add(this.camera.rotation)
-      .to({ x: -1.6, y: 0.76, z: 1.62 })
-      .delay(1500)
-      .duration(1000)
-      .easing(Tiny.Easing.Cubic.InOut)
-      .start();
-
-    this.timer.add(3000, this.showOptions, this);
-    // this.showOptions();
-  }
-
-  showOptions() {
-    this.ui.choiceBar.showActions([
-      { icon: "corn", action: () => {} },
-      { icon: "grape", action: () => {} },
-      { icon: "strawberry", action: () => {} }
-    ]);
   }
 
   create() {
@@ -113,16 +71,22 @@ export class Game extends App3D {
 
     sdk.create();
 
+    this.timer.loop(1000, () => {
+      this.balance += this.income;
+
+      this.emit("balance", this.balance);
+    });
+
     app.emit("ad:ready", this);
 
     let clicks = 0;
 
-    this.startIntro();
+    GameplayManager.init();
 
     this.input.on("down", () => {
       clicks++;
 
-      if (clicks >= 215) {
+      if (clicks >= 100) {
         this.finish();
       }
     });

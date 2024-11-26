@@ -11,13 +11,17 @@ export class Balance extends Tiny.Object2D {
     money.x = -20;
     this.add(money);
 
-    var balanceText = new Tiny.Text(numToStr(100), {
+    var balanceText = new Tiny.Text(numToStr(app.balance), {
       font: "bold 40pt Arial",
       fill: "#ffffff"
     });
     balanceText.anchor.set(0, 0.5);
     balanceText.x = 32;
     balanceText.y = 3;
+
+    app.on("balance", (balance) => {
+      balanceText.setText(numToStr(balance))
+    })
 
     this.add(balanceText);
   }

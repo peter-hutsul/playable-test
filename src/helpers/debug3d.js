@@ -81,7 +81,7 @@ if (__DEV__) {
     //_control.addEventListener( 'change', render );
 
     _control.addEventListener("dragging-changed", function (event) {
-      controls.enabled = !event.value;
+      if (window.controls) window.controls.enabled = !event.value;
     });
 
     // console.log(_control);

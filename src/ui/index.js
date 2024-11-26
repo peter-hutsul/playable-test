@@ -30,7 +30,7 @@ export class UI extends Tiny.Object2D {
     this.game.input.add(this.skipDay);
     this.skipDay.input.on("down", () => this.game.scene.nextDay());
 
-    this.add(this.skipDay);
+    this.hud.add(this.skipDay);
   }
 
   showEndcard() {

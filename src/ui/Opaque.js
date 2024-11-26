@@ -81,7 +81,6 @@ export default class Opaque extends Tiny.Object2D {
       this.wiggle.stop();
       this.wiggle.start();
     }
-    //  this.hand.rotation = Tiny.Math.degToRad(hand_angle)
 
     this.visible = true;
     this.resize();
