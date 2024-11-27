@@ -1,7 +1,7 @@
 import { TopBar } from "./TopBar";
 import { InstallButton } from "./InstallButton";
 import { Balance } from "./Balance";
-import { Opaque } from "./Opaque2D";
+import { Opaque } from "./Opaque";
 import { Endcard } from "./Endcard";
 import { ChoiceBar } from "./ChoiceBar";
 

@@ -60,6 +60,7 @@ export class ChoiceBar extends Tiny.Object2D {
       })
       .duration(250)
       .easing(Tiny.Easing.Back.Out)
+      .onComplete(() => app.emit("options:show", this))
       .start();
 
     this.visible = true;

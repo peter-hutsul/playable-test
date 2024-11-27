@@ -7,6 +7,7 @@ import { MapControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { resources } from "./resources";
 import { sdk } from "sdk";
 import { GameplayManager } from "./managers/GameplayManager";
+import { TutorialManager } from "./managers/TutorialManager";
 import { config } from "config";
 
 export class Game extends App3D {
@@ -81,6 +82,7 @@ export class Game extends App3D {
 
     let clicks = 0;
 
+    if (config.tutorial.enabled) TutorialManager.init();
     GameplayManager.init();
 
     this.input.on("down", () => {
@@ -131,6 +133,8 @@ export class Game extends App3D {
 
   destroy() {
     super.destroy();
+    GameplayManager.destroy();
+    TutorialManager.destroy();
     this.ui = undefined;
     this.scene = undefined;
   }

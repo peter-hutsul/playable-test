@@ -12,7 +12,7 @@ export class sdk {
 
   static app;
 
-  static onResize() {
+  static #onResize() {
     const width = Math.floor(window.innerWidth);
     const height = Math.floor(window.innerHeight);
     this.landscape = width > height;
@@ -22,18 +22,44 @@ export class sdk {
     }
   }
 
+  static #onPause() {
+    const app = this.app;
+    if (typeof app.volume == "function") app.volume(0);
+    if (typeof app.pause == "function") app.pause();
+  }
+
+  static #onResume() {
+    const app = this.app;
+    if (typeof app.volume == "function") app.volume(1);
+    if (typeof app.resume == "function") app.resume();
+  }
+
   static boot(AppClass) {
     window.app = this.app = new AppClass(Math.floor(window.innerWidth), Math.floor(window.innerHeight));
+
+    let hidden, visibilityChange;
+    if (typeof document.hidden !== "undefined") {
+      hidden = "hidden";
+      visibilityChange = "visibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+      hidden = "webkitHidden";
+      visibilityChange = "webkitvisibilitychange";
+    }
+
+    document.addEventListener(visibilityChange, () => {
+      if (document[hidden]) this.#onPause();
+      else this.#onResume();
+    });
   }
 
   static init(AppClass) {
     SplashScreen.init();
     window.addEventListener("load", () => this.boot(AppClass));
-    window.addEventListener("resize", () => this.onResize(), false);
+    window.addEventListener("resize", () => this.#onResize(), false);
   }
 
   static create() {
-    this.onResize();
+    this.#onResize();
     SplashScreen.hide();
   }
 

@@ -127,6 +127,12 @@ export class GameplayManager {
     app.scene.add(placeholder);
 
     this.placeholder = placeholder;
+
+    placeholder.inputEnabled = false;
+    app.timer.add(2500, () => {
+      placeholder.inputEnabled = true;
+      app.emit("cell:show", placeholder)
+    })
   }
 
   static showSecondCell() {
@@ -149,6 +155,12 @@ export class GameplayManager {
     app.scene.add(placeholder);
 
     this.placeholder = placeholder;
+
+    placeholder.inputEnabled = false;
+    app.timer.add(1000, () => {
+      placeholder.inputEnabled = true;
+      app.emit("cell:show", placeholder)
+    })
   }
 
   static showThirdCell() {
@@ -167,6 +179,12 @@ export class GameplayManager {
     placeholder.rotation.y = -Math.PI / 2;
     app.scene.add(placeholder);
     this.placeholder = placeholder;
+
+    placeholder.inputEnabled = false;
+    app.timer.add(4000, () => {
+      placeholder.inputEnabled = true;
+      app.emit("cell:show", placeholder)
+    })
   }
 
   static showFourthCell() {
@@ -182,6 +200,12 @@ export class GameplayManager {
     placeholder.rotation.y = -Math.PI / 2;
     app.scene.add(placeholder);
     this.placeholder = placeholder;
+
+    placeholder.inputEnabled = false;
+    app.timer.add(1000, () => {
+      placeholder.inputEnabled = true;
+      app.emit("cell:show", placeholder)
+    })
   }
 
   static placePlant(ItemClass, nextStep) {
@@ -198,6 +222,7 @@ export class GameplayManager {
     app.scene.remove(this.placeholder);
 
     app.timer.add(2000, nextStep, this);
+    app.emit("plant:place", item)
   }
 
   static placeAnimal(ItemClass, nextStep) {
@@ -214,9 +239,8 @@ export class GameplayManager {
     app.scene.remove(this.placeholder);
 
     app.timer.add(2000, nextStep, this);
+    app.emit("animal:place", item)
   }
 
-  destroy() {
-    app.off("gameplay:start", this.showCell, this);
-  }
+  destroy() { }
 }

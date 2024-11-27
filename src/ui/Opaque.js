@@ -1,6 +1,7 @@
+import { sdk } from "sdk";
 import { Vector3 } from "three";
 
-export default class Opaque extends Tiny.Object2D {
+export class Opaque extends Tiny.Object2D {
   constructor(parent) {
     super();
 
@@ -10,17 +11,17 @@ export default class Opaque extends Tiny.Object2D {
 
     app.input.add(this);
 
-    var hand = (this.hand = new Tiny.Object2D());
+    const hand = (this.hand = new Tiny.Object2D());
 
-    var hand_sprite = new Tiny.Sprite("hand");
+    const hand_sprite = new Tiny.Sprite("hand");
     hand_sprite.rotation = -1.57;
     hand_sprite.position.x = 190;
-    hand_sprite.scale.set(1.5);
+    hand_sprite.scale.set(1.2);
     hand_sprite.anchor.set(0.5);
 
     hand.add(hand_sprite);
 
-    var text = (this.text = new Tiny.Text("", {
+    const text = (this.text = new Tiny.Text("", {
       wordWrap: true,
       wordWrapWidth: 300,
       align: "center",
@@ -46,7 +47,7 @@ export default class Opaque extends Tiny.Object2D {
     this.visible = false;
 
     if (true) {
-      this.wiggle = this.tweens
+      this.wiggle = app.tweens
         .add(hand_sprite.anchor)
         .to({ y: 0.3 }, 400)
         .easing(Tiny.Easing.Quadratic.InOut)
@@ -54,14 +55,14 @@ export default class Opaque extends Tiny.Object2D {
         .repeat(Infinity);
     }
 
-    var dg = new Tiny.Graphics();
+    const dg = new Tiny.Graphics();
 
     dg.clear();
     dg.beginFill("#000000", 0.85);
     dg.drawRect(-1, -1, 2, 2);
     dg.endFill();
 
-    var darker = (this.darker = new Tiny.Sprite(dg.generateTexture()));
+    const darker = (this.darker = new Tiny.Sprite(dg.generateTexture()));
     darker.anchor.set(0.5);
     dg.destroy();
 
@@ -70,12 +71,14 @@ export default class Opaque extends Tiny.Object2D {
     this.parent.parent.add(darker);
   }
 
-  opaque3D(object3d, text = "", scale = 2) {
+  showWorld(object3d, text = "", hand = true, scale = 2) {
     this.hide();
     this.bg.scale.set(scale);
     this.object3d = object3d;
     this.follow3d = true;
     this.text.setText(text);
+    this.text.visible = !!text;
+    this.hand.visible = hand;
 
     if (this.wiggle) {
       this.wiggle.stop();
@@ -86,7 +89,7 @@ export default class Opaque extends Tiny.Object2D {
     this.resize();
   }
 
-  opaque2D(object2d, text, scale, cb = () => {}) {
+  showUI(object2d, text = "", hand = true, scale = 1) {
     this.hide();
     this.bg.scale.set(scale);
     this.object2d = object2d;
@@ -94,20 +97,21 @@ export default class Opaque extends Tiny.Object2D {
     this.text.setText(text);
     this.x = this.object2d.x;
     this.y = this.object2d.y;
+    this.text.visible = !!text;
+    this.hand.visible = hand;
 
     if (this.wiggle) {
       this.wiggle.stop();
       this.wiggle.start();
     }
 
-    this.input.on("down", (e) => {
-      if (app.input._active_objects.includes(this.object2d)) {
-        this.object2d.input.emit("down");
-        this.hide();
-        cb();
-      }
-      e.stopPropagation();
-    });
+    // let tempWasEnabled = object2d.inputEnabled;
+    // if (!tempWasEnabled) app.input.add(object2d);
+    // object2d.input.once("down", (e) => {
+    //   object2d.inputEnabled = tempWasEnabled;
+    //   this.hide();
+    //   cb();
+    // });
 
     this.visible = true;
     this.resize();
@@ -118,7 +122,7 @@ export default class Opaque extends Tiny.Object2D {
     if (delay) {
       this.darker.alpha = 0;
       this.darker.visible = true;
-      this.tweens.add(this.darker).to({ alpha: 1 }, delay).easing(Tiny.Easing.Cubic.Out).onComplete(cb).start();
+      app.tweens.add(this.darker).to({ alpha: 1 }, delay).easing(Tiny.Easing.Cubic.Out).onComplete(cb).start();
     } else {
       this.darker.visible = true;
       cb && cb();
@@ -134,8 +138,8 @@ export default class Opaque extends Tiny.Object2D {
       if (this.follow2d) {
         this.x = this.object2d.x;
         this.y = this.object2d.y;
-        this.updateTextPos();
-        this.updateHandPos();
+        this.updateTextPosition();
+        this.updateHandPosition();
 
         if (this.center) {
           this.text.x -= this.x;
@@ -154,13 +158,12 @@ export default class Opaque extends Tiny.Object2D {
       this.follow2d = false;
       this.object2d = null;
       this.visible = false;
-      this.input.removeAllListeners("down");
       if (this.wiggle) this.wiggle.stop();
     }
   }
 
-  updateHandPos() {
-    if (!app.parent.isLandscape) {
+  updateHandPosition() {
+    if (!sdk.landscape) {
       if (this.x < 0) this.hand.rotation = 0.1;
       else this.hand.rotation = 3;
     } else {
@@ -169,11 +172,11 @@ export default class Opaque extends Tiny.Object2D {
     }
   }
 
-  updateTextPos() {
-    if (!app.parent.isLandscape) {
+  updateTextPosition() {
+    if (!sdk.landscape) {
       this.text.x = 0;
-      if (this.y < 0) this.text.y = game.ui.opaque.text.height / 2 + 130;
-      else this.text.y = -game.ui.opaque.text.height / 2 - 130;
+      if (this.y < 0) this.text.y = app.ui.opaque.text.height / 2 + 130;
+      else this.text.y = -app.ui.opaque.text.height / 2 - 130;
 
       if (this.x < -150) {
         this.text.x = -(this.x + 150);
@@ -182,8 +185,8 @@ export default class Opaque extends Tiny.Object2D {
       }
     } else {
       this.text.y = 0;
-      if (this.x < 0) this.text.x = game.ui.opaque.text.width / 2 + 130;
-      else this.text.x = -game.ui.opaque.text.width / 2 - 130;
+      if (this.x < 0) this.text.x = app.ui.opaque.text.width / 2 + 130;
+      else this.text.x = -app.ui.opaque.text.width / 2 - 130;
 
       if (this.y < -150) {
         this.text.y = -(this.y + 150);
@@ -199,15 +202,15 @@ export default class Opaque extends Tiny.Object2D {
 
       this.object3d.updateMatrixWorld();
 
-      var m = this.object3d.matrixWorld;
-      this.temp.setFromMatrixPosition(m);
+      const matrix = this.object3d.matrixWorld;
+      this.temp.setFromMatrixPosition(matrix);
 
-      this.temp.project(app.parent.camera);
+      this.temp.project(app.camera);
       this.x = (this.temp.x * app.ui.scaledWidth) / 2;
       this.y = (-this.temp.y * app.ui.scaledHeight) / 2;
 
-      this.updateTextPos();
-      this.updateHandPos();
+      this.updateTextPosition();
+      this.updateHandPosition();
 
       if (this.center) {
         this.text.x -= this.x;
