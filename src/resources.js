@@ -14,17 +14,26 @@ import theme from "assets/sounds/theme.mp3";
 import popup_chest from "assets/sounds/popup_chest.mp3";
 import click from "assets/sounds/click_003.mp3";
 import throw_spear from "assets/sounds/throw_spear.mp3";
+import cowsound from "assets/sounds/cow.mp3";
+import sheepsound from "assets/sounds/sheep2.mp3";
+import chickensound from "assets/sounds/chicken.mp3"; 
+import leaf from "assets/images/leaf.jpg"; 
 
 export const resources = {
   ground,
   objects,
   plus,
   smoke,
+  leaf,
   sounds: {
+    theme,
     theme,
     popup_chest,
     click,
-    throw_spear
+    throw_spear,
+    cow: cowsound,
+    sheep: sheepsound,
+    chicken: chickensound,
   },
   images: {
     corn,

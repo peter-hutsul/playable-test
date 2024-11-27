@@ -36,7 +36,7 @@ export class Game extends App3D {
     camera.distance = 60;
 
     if (__DEV__) {
-      var controls = (window.controls = new MapControls(camera, this.inputView));
+      // var controls = (window.controls = new MapControls(camera, this.inputView));
       // controls.addEventListener('change', game.update.bind(game));
       // controls.minDistance = 0;
       // controls.maxDistance = 5000;

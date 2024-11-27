@@ -9,7 +9,8 @@ export class Fence extends Object3D {
     const particles = new FenceParticles();
     particles.start();
     this.add(particles);
-
+    app.sound.play('throw_spear')
+    
     const fence = app.cache.gltf.objects.scene.getObjectByName("fence");
     for (let child of fence.children) {
       this.add(child.clone());

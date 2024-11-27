@@ -3,6 +3,7 @@ import { resources } from "../resources";
 import { Scene, AmbientLight, DirectionalLight, Color, PointLight, MeshBasicMaterial } from "three";
 import { Chicken } from "./Chicken";
 import { random } from "utils";
+import { FallingLeavesParticles } from "./FallingLeaves";
 
 export class World extends Scene {
   constructor(game) {
@@ -13,7 +14,13 @@ export class World extends Scene {
   preload() {
     app.load.gltf("ground", resources.ground, false, function (gltf) {
       gltf.scene.traverse(function (obj) {
-        if (obj.isMesh) obj.geometry.computeVertexNormals();
+        if (obj.isMesh) {
+          if (!obj.geometry.computed) {
+            if (!config.graphics.smooth) obj.geometry = obj.geometry.toNonIndexed();
+            obj.geometry.computeVertexNormals();
+            obj.geometry.computed = true;
+          }
+        }
       });
     });
 
@@ -21,7 +28,11 @@ export class World extends Scene {
       gltf.scene.traverse(function (obj) {
         if (obj.isMesh) {
           obj.castShadow = true;
-          obj.geometry.computeVertexNormals();
+          if (!obj.geometry.computed) {
+            if (!config.graphics.smooth) obj.geometry = obj.geometry.toNonIndexed();
+            obj.geometry.computeVertexNormals();
+            obj.geometry.computed = true;
+          }
         }
       });
 
@@ -30,6 +41,7 @@ export class World extends Scene {
 
     app.load.texture3d("plus", resources.plus);
     app.load.texture3d("smoke", resources.smoke);
+    app.load.texture3d("leaf", resources.leaf);
   }
 
   create() {
@@ -43,6 +55,7 @@ export class World extends Scene {
         }
       }
     });
+    this.add(ground);
 
     const chicken = new Chicken();
     chicken.position.set(9.2, 4.15, -6.53);
@@ -59,7 +72,11 @@ export class World extends Scene {
     chicken3.rotation.y = random(-Math.PI, Math.PI);
     this.add(chicken3);
 
-    this.add(ground);
+    const fallingLeaves = new FallingLeavesParticles();
+    fallingLeaves.position.y = 4;
+    fallingLeaves.start();
+    this.add(fallingLeaves);
+
     this.setupLight();
   }
 

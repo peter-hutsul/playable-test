@@ -10,11 +10,14 @@ export class Ground extends Object3D {
     particles.start();
     this.add(particles);
 
+    app.sound.play('throw_spear')
     app.timer.add(1000, () => {
       const ground = app.cache.gltf.objects.scene.getObjectByName("ground");
       const positions = [];
       for (let child of ground.children) {
         positions.push(child.position);
+        child.receiveShadow = true;
+        child.castShadow = false;
         this.add(child.clone());
       }
 

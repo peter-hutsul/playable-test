@@ -1,5 +1,5 @@
 import { AnimationMixer, LoopPingPong, Object3D } from "three";
-import { randomInt } from "utils";
+import { randomInt, is } from "utils";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
 
 const animationConfig = {
@@ -23,6 +23,8 @@ export class Chicken extends Object3D {
     this.loadModel();
 
     this.actionTimer = app.timer.loop(randomInt(6000, 16000), () => {
+      if (is(1 / 4)) app.sound.play("chicken", 0.2);
+
       this.anims.action_chicken.weight = 1;
       this.anims.idle_chicken.stop();
       this.anims.action_chicken.play();

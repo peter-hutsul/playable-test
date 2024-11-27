@@ -16,7 +16,7 @@ export class Strawberry extends Object3D {
     this.rotation.y = randomDirAngle();
     this._scale = 0.4;
     this.body.scale.set(this._scale, this._scale, this._scale);
-    this.delay = randomInt(0, 1000);
+    this.delay = randomInt(0, 600);
     this.state = 0;
 
     app.timer.loop(randomInt(2000, 4000), () => {
@@ -42,7 +42,7 @@ export class Strawberry extends Object3D {
       this.delay -= delta;
       if (this.delay <= 0) this.state = 1;
     } else if (this.state === 1) {
-      this._scale += 0.00003 * delta;
+      this._scale += 0.00009 * delta;
       this.body.scale.set(this._scale, this._scale, this._scale);
       if (this._scale >= 1) {
         this.state = 2;
@@ -52,7 +52,7 @@ export class Strawberry extends Object3D {
         this.add(this.body);
       }
     } else if (this.state === 2) {
-      this._scale += 0.00002 * delta;
+      this._scale += 0.00006 * delta;
       this.body.scale.set(this._scale, this._scale, this._scale);
       if (this._scale >= 1.2) {
         this.state = 3;

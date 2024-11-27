@@ -80,19 +80,19 @@ export class GameplayManager {
         y: 22,
         z: [0.541, 1.91]
       })
-      .interpolation(Tiny.Interpolation.CatmullRom)
+      .interpolation(Tiny.Interpolation.Bezier)
       .duration(3000)
       .delay(1000)
-      .easing(Tiny.Easing.Cubic.In)
+      .easing(Tiny.Easing.Cubic.InOut)
       .start();
 
     app.tweens
       .add(app.camera.rotation)
       .to({ x: [-1.04, -1.55], y: [-0.034, -0.647], z: [-0.059, -1.54] })
-      .interpolation(Tiny.Interpolation.CatmullRom)
+      .interpolation(Tiny.Interpolation.Bezier)
       .duration(3000)
       .delay(1000)
-      .easing(Tiny.Easing.Cubic.In)
+      .easing(Tiny.Easing.Cubic.InOut)
       .start();
   }
 
@@ -131,8 +131,8 @@ export class GameplayManager {
     placeholder.inputEnabled = false;
     app.timer.add(2500, () => {
       placeholder.inputEnabled = true;
-      app.emit("cell:show", placeholder)
-    })
+      app.emit("cell:show", placeholder);
+    });
   }
 
   static showSecondCell() {
@@ -159,8 +159,8 @@ export class GameplayManager {
     placeholder.inputEnabled = false;
     app.timer.add(1000, () => {
       placeholder.inputEnabled = true;
-      app.emit("cell:show", placeholder)
-    })
+      app.emit("cell:show", placeholder);
+    });
   }
 
   static showThirdCell() {
@@ -183,8 +183,8 @@ export class GameplayManager {
     placeholder.inputEnabled = false;
     app.timer.add(4000, () => {
       placeholder.inputEnabled = true;
-      app.emit("cell:show", placeholder)
-    })
+      app.emit("cell:show", placeholder);
+    });
   }
 
   static showFourthCell() {
@@ -204,8 +204,8 @@ export class GameplayManager {
     placeholder.inputEnabled = false;
     app.timer.add(1000, () => {
       placeholder.inputEnabled = true;
-      app.emit("cell:show", placeholder)
-    })
+      app.emit("cell:show", placeholder);
+    });
   }
 
   static placePlant(ItemClass, nextStep) {
@@ -222,7 +222,7 @@ export class GameplayManager {
     app.scene.remove(this.placeholder);
 
     app.timer.add(2000, nextStep, this);
-    app.emit("plant:place", item)
+    app.emit("plant:place", item);
   }
 
   static placeAnimal(ItemClass, nextStep) {
@@ -239,8 +239,8 @@ export class GameplayManager {
     app.scene.remove(this.placeholder);
 
     app.timer.add(2000, nextStep, this);
-    app.emit("animal:place", item)
+    app.emit("animal:place", item);
   }
 
-  destroy() { }
+  destroy() {}
 }

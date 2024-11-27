@@ -55,10 +55,10 @@ export class sdk {
   static init(AppClass) {
     SplashScreen.init();
     window.addEventListener("load", () => this.boot(AppClass));
-    window.addEventListener("resize", () => this.#onResize(), false);
   }
 
   static create() {
+    window.addEventListener("resize", () => this.#onResize(), false);
     this.#onResize();
     SplashScreen.hide();
   }

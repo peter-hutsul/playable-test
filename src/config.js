@@ -1,7 +1,8 @@
 export const config = {
   graphics: {
     gamma: false,
-    shadows: true
+    shadows: true,
+    smooth: false
   },
   economy: {
     startBalance: 100,
