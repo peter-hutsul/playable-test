@@ -1,14 +1,14 @@
-import { OrthographicCamera, PerspectiveCamera } from "three";
-
+import { PerspectiveCamera } from "three";
 import { UI } from "./ui";
 import { World } from "./world";
 import { App3D } from "./helpers/App3D";
-import { MapControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { resources } from "./resources";
-import { sdk } from "sdk";
 import { GameplayManager } from "./managers/GameplayManager";
 import { TutorialManager } from "./managers/TutorialManager";
 import { config } from "config";
+import { getScale } from "utils";
+import sdk from "@smoud/playable-sdk";
+import { SplashScreen } from "./SplashScreen";
 
 export class Game extends App3D {
   constructor(width, height) {
@@ -70,7 +70,8 @@ export class Game extends App3D {
 
     this.ready = true;
 
-    sdk.create();
+    SplashScreen.hide();
+    sdk.start();
 
     this.timer.loop(1000, () => {
       this.balance += this.income;
@@ -89,7 +90,7 @@ export class Game extends App3D {
       clicks++;
 
       if (clicks >= 100) {
-        this.finish();
+        sdk.finish();
       }
     });
   }
@@ -104,14 +105,13 @@ export class Game extends App3D {
 
     app.emit("ad:finish", this);
 
-    sdk.finish();
-
     // this.input.on("down", () => sdk.install());
   }
 
-  resize(width, height, scale) {
+  resize(width, height) {
     super.resize(width, height);
 
+    const scale = getScale(width, height);
     this.scale = scale;
     this.screen.scale = scale;
     this.screen.width = width / scale;

@@ -6,7 +6,6 @@
       "components/*": ["./components/*"],
       "consts": ["./consts"],
       "utils": ["./utils"],
-      "sdk": ["./sdk"],
       "config": ["./config"],
       "img/*": ["./img/*"]
     }

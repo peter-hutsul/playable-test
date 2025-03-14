@@ -8,6 +8,7 @@ import { Cow } from "../world/Cow";
 import { Sheep } from "../world/Sheep";
 import { Fence } from "../world/Fence";
 import { remove } from "utils";
+import sdk from "@smoud/playable-sdk";
 
 export class GameplayManager {
   static init() {
@@ -192,7 +193,7 @@ export class GameplayManager {
     app.once("cell:click", () => {
       this.placeholder.destroy();
       app.scene.remove(this.placeholder);
-      app.finish();
+      sdk.finish();
     });
 
     const placeholder = new Placeholder();

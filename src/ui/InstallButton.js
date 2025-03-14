@@ -1,5 +1,5 @@
+import sdk from "@smoud/playable-sdk";
 import { fitToSize } from "utils";
-import { sdk } from "sdk";
 
 export class InstallButton extends Tiny.Sprite {
   constructor(parent) {
@@ -18,7 +18,7 @@ export class InstallButton extends Tiny.Sprite {
 
     this.anchor.set(0.5);
 
-    var text = new Tiny.Text(lang("Install").toUpperCase());
+    var text = new Tiny.Text("Install".toUpperCase());
     text.anchor.set(0.5);
     text.style.font = `bold 42pt Arial`;
     text.style.fill = "#ffffff";

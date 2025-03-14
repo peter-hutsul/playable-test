@@ -1,4 +1,4 @@
-import { sdk } from "sdk";
+import sdk from "@smoud/playable-sdk";
 import { Vector3 } from "three";
 
 export class Opaque extends Tiny.Object2D {
@@ -163,7 +163,7 @@ export class Opaque extends Tiny.Object2D {
   }
 
   updateHandPosition() {
-    if (!sdk.landscape) {
+    if (!sdk.isLandscape) {
       if (this.x < 0) this.hand.rotation = 0.1;
       else this.hand.rotation = 3;
     } else {
@@ -173,7 +173,7 @@ export class Opaque extends Tiny.Object2D {
   }
 
   updateTextPosition() {
-    if (!sdk.landscape) {
+    if (!sdk.isLandscape) {
       this.text.x = 0;
       if (this.y < 0) this.text.y = app.ui.opaque.text.height / 2 + 130;
       else this.text.y = -app.ui.opaque.text.height / 2 - 130;

@@ -1,4 +1,4 @@
-import { sdk } from "sdk";
+import sdk from "@smoud/playable-sdk";
 import { ChoiceButton } from "./ChoiceButton";
 import { is, PL, randomInt } from "utils";
 
@@ -88,7 +88,7 @@ export class ChoiceBar extends Tiny.Object2D {
 
   alignButtons() {
     const center = this.children.length / 2;
-    const isLandscape = sdk.landscape;
+    const isLandscape = sdk.isLandscape;
 
     this.graphics.clear();
     this.graphics.beginFill("#000000", 0.4);

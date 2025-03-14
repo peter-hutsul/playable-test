@@ -1,16 +1,25 @@
 import "h5tiny";
 import "h5tiny/plugins/sound";
 import "h5tiny/plugins/three";
-
 import { Game } from "./Game";
-import { sdk } from "sdk";
-import { locales } from "./locales";
 import "./helpers/fixLoader";
 import "./helpers/debug3d";
 import "./helpers/howler";
+import sdk from "@smoud/playable-sdk";
+import { SplashScreen } from "SplashScreen";
 
-sdk.setLocales(locales);
-sdk.init(Game);
+sdk.init((width, height) => {
+  SplashScreen.init();
+
+  const game = new Game(width, height);
+  window.app = game;
+
+  sdk.on("resize", game.resize, game);
+  sdk.on("pause", game.pause, game);
+  sdk.on("resume", game.resume, game);
+  sdk.on("resume", game.resume, game);
+  sdk.on("finish", game.finish, game);
+});
 
 if (__DEV__) {
   (function () {

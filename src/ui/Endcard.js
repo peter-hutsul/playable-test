@@ -1,6 +1,6 @@
-import { sdk } from "sdk";
 import { fitToSize, PL } from "utils";
 import { ChoiceButton } from "./ChoiceButton";
+import sdk from "@smoud/playable-sdk";
 
 export class Endcard extends Tiny.Object2D {
   constructor(parent) {

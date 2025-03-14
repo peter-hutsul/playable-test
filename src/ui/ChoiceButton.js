@@ -1,5 +1,4 @@
-import { fitToSize, randomInt } from "utils";
-import { sdk } from "sdk";
+import { randomInt } from "utils";
 
 export class ChoiceButton extends Tiny.Sprite {
   constructor(key, action) {
