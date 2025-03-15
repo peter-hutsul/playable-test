@@ -7,7 +7,7 @@
   },
   "main": "src/index.js",
   "dependencies": {
-    "@smoud/playable-sdk": "^1.0.2",
+    "@smoud/playable-sdk": "^1.0.6",
     "h5tiny": "^2.2.3",
     "three": "^0.112.0"
   },
@@ -15,6 +15,6 @@
   "author": "Peter Hutsul",
   "license": "ISC",
   "devDependencies": {
-    "@smoud/playable-scripts": "^1.0.3"
+    "@smoud/playable-scripts": "^1.0.9"
   }
 }
